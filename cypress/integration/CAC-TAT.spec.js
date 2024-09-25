@@ -146,7 +146,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
             .should('not.be.checked')
     })
 
-    it.only('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário utilizando check', function(){
+    it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário utilizando check', function(){
         cy.get('#firstName').type('João')
         cy.get('#lastName').type('Silva')
         cy.get('#email').type('joão@teste.com')
@@ -157,4 +157,47 @@ describe('Central de Atendimento ao Cliente TAT', function() {
 
         cy.get('.error').should('be.visible')
     })
+
+    it('seleciona um arquivo da pasta fixtures', function(){
+        cy.get('input[type="file"]') //como só tem um input do tipo file, pode ser esse comando. Do contrário, usar ID
+        .should('not.have.value')
+        .selectFile('./cypress/fixtures/example.json')
+        .should(function($input) {
+            expect($input[0].files[0].name).to.equal('example.json')
+        })
+    })
+
+    it('seleciona um arquivo simulando um drag-and-drop', function(){
+        cy.get('input[type="file"]') //como só tem um input do tipo file, pode ser esse comando. Do contrário, usar ID
+        .should('not.have.value')
+        .selectFile('./cypress/fixtures/example.json', {action: 'drag-drop'})
+        .should(function($input) {
+            expect($input[0].files[0].name).to.equal('example.json')
+        })
+    })
+
+    it('seleciona um arquivo utilizando uma fixture para a qual foi dada um alias', function(){
+        cy.fixture('example.json').as('sampleFile')
+        cy.get('input[type="file"]')
+            .selectFile('@sampleFile')
+            .should(function($input) {
+                expect($input[0].files[0].name).to.equal('example.json')
+            })
+    })
+
+    it('verifica que a política de privacidade abre em outra aba sem a necessidade de um clique', function(){
+        cy.get('#privacy a') //dentro da DIV privacy seleciona o atributo A (ID = privacy, atribute = A)
+            .should('have.attr', 'target', '_blank')
+    })
+
+    //Atributo target com valor _blank, refere-se que o link será aberto em outra aba do navegador
+
+    it.only('acessa a página da política de privacidade removendo o target e então clicando no link', function(){
+        cy.get('#privacy a')
+            .invoke('removeAttr', 'target') //comando cy.invoke está invocando o metodo remove attribute, que realiza ação no atributo target, logo ao clicar no link não irá abrir em outra página
+            .click()
+        cy.contains('Talking About Testing')
+            .should('be.visible')
+    })
+    
 })   
