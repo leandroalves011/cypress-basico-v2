@@ -192,12 +192,15 @@ describe('Central de Atendimento ao Cliente TAT', function() {
 
     //Atributo target com valor _blank, refere-se que o link será aberto em outra aba do navegador
 
-    it.only('acessa a página da política de privacidade removendo o target e então clicando no link', function(){
+    it('acessa a página da política de privacidade removendo o target e então clicando no link', function(){
         cy.get('#privacy a')
             .invoke('removeAttr', 'target') //comando cy.invoke está invocando o metodo remove attribute, que realiza ação no atributo target, logo ao clicar no link não irá abrir em outra página
             .click()
         cy.contains('Talking About Testing')
             .should('be.visible')
     })
-    
+
+    it('teste para falhar e gerar a pasta screenshot', function(){
+        cy.title().should('be.equal', 'Central de NNNNN ao Cliente TAT')
+    })
 })   
