@@ -200,7 +200,10 @@ describe('Central de Atendimento ao Cliente TAT', function() {
             .should('be.visible')
     })
 
+    /*
     it('teste para falhar e gerar a pasta screenshot', function(){
         cy.title().should('be.equal', 'Central de NNNNN ao Cliente TAT')
     })
 })   
+    */
+   
