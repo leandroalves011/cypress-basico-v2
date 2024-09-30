@@ -1,6 +1,7 @@
 /// <reference types="Cypress" />
 
 describe('Central de Atendimento ao Cliente TAT', function() {
+    const THREE_SECONDS_IN_MS = 3000
 
     beforeEach(function() {
         cy.visit('./src/index.html')
@@ -22,6 +23,9 @@ describe('Central de Atendimento ao Cliente TAT', function() {
 
     it('preenche os campos obrigatórios e envia formulário, com um delay rápido para campos longos', function(){
         const textoLongo = 'Esse texto é muito, muito, muito longo que serve para testar a propriedade delay do .type'
+
+        cy.clock() //congela o relógio do navegador
+
         cy.get('#firstName').type('Jose')
         cy.get('#lastName').type('Filho')
         cy.get('#email').type('jose@teste.com')
@@ -29,9 +33,15 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         cy.contains('button', 'Enviar').click()
 
         cy.get('.success').should('be.visible')
+
+        cy.tick(THREE_SECONDS_IN_MS) //avança 3 segundos no tempo, com a variável criada no describe
+
+        cy.get('.success').should('not.be.visible')
     })
 
     it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function(){
+        cy.clock()
+
         cy.get('#firstName').type('Jose')
         cy.get('#lastName').type('Filho')
         cy.get('#email').type('jose@teste,com')
@@ -39,6 +49,10 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         cy.contains('button', 'Enviar').click()
 
         cy.get('.error').should('be.visible') //quanto tem um ponto após cy.get, ele busca por uma classe com aquele nome
+
+        cy.tick(THREE_SECONDS_IN_MS)
+
+        cy.get('.error').should('not.be.visible')
     })
         
     it('campo telefone continua vazio quando preenchido com valor não-numérico', function(){
@@ -49,6 +63,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     })
 
     it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function(){
+        cy.clock()
 
         cy.get('#firstName').type('João')
         cy.get('#lastName').type('Silva')
@@ -59,6 +74,10 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         cy.contains('button', 'Enviar').click()
 
         cy.get('.error').should('be.visible')
+
+        cy.tick(THREE_SECONDS_IN_MS)
+
+        cy.get('.error').should('not.be.visible')
     })
 
     it('preenche e limpa os campos nome, sobrenome, email e telefone', function(){
@@ -89,17 +108,28 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     })
 
     it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', function(){
+        cy.clock()
 
         cy.contains('button', 'Enviar').click() //busca um elemento BUTTON no CSS, e que tenha o texto ENVIAR (em casos de elementos ruins, buscar pelo texto do elemento, que geralmente é único, é uma boa opção)
 
         cy.get('.error').should('be.visible')
 
+        cy.tick(THREE_SECONDS_IN_MS)
+
+        cy.get('.error').should('not.be.visible')
+
     })
 
     it('envia o formulário com sucesso usando um comando customizado', function(){
+        cy.clock()
+
         cy.fillMandatoryFieldsAndSubmit()
 
         cy.get('.success').should('be.visible')
+
+        cy.tick(THREE_SECONDS_IN_MS)
+
+        cy.get('.success').should('not.be.visible')
     })
 
     it('seleciona um produto (Youtube) por seu texto', function(){
