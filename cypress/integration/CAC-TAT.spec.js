@@ -229,11 +229,45 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         cy.contains('Talking About Testing')
             .should('be.visible')
     })
-})
+
     /*
     it('teste para falhar e gerar a pasta screenshot', function(){
         cy.title().should('be.equal', 'Central de NNNNN ao Cliente TAT')
     })
 })   
     */
-   
+it.only('exibe e esconde as mensagens de sucesso e erro usando o .invoke', function() {
+    cy.get('.success')
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+      .and('contain', 'Mensagem enviada com sucesso.')
+      .invoke('hide')
+      .should('not.be.visible')
+    cy.get('.error')
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+      .and('contain', 'Valide os campos obrigatórios!')
+      .invoke('hide')
+      .should('not.be.visible')
+    })
+
+it('preenche a area de texto usando o comando invoke', function(){
+    const newLongText = Cypress._.repeat('0123456789', 20)
+    
+    cy.get('#open-text-area')
+        .invoke('val', newLongText) //invoca um valor, de uma variável
+        .should('have.value', newLongText)
+    })
+
+it('faz uma requisição HTTP', function() {
+    cy.request('https://cac-tat.s3.eu-central-1.amazonaws.com/index.html') //cy.request utilizado para testes de API
+        .should(function(response) { //a função recebe a resposta(response) da requisição/request
+            const {status, statusText, body} = response //campos contidos no inspect da URL acima
+            expect(status).to.equal(200)
+            expect(statusText).to.equal('OK')
+            expect(body).to.include('CAC TAT')
+        })
+    })
+})
