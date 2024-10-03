@@ -236,7 +236,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     })
 })   
     */
-it.only('exibe e esconde as mensagens de sucesso e erro usando o .invoke', function() {
+it('exibe e esconde as mensagens de sucesso e erro usando o .invoke', function() {
     cy.get('.success')
       .should('not.be.visible')
       .invoke('show')
@@ -269,5 +269,15 @@ it('faz uma requisição HTTP', function() {
             expect(statusText).to.equal('OK')
             expect(body).to.include('CAC TAT')
         })
+    })
+
+it('encontra o gato escondido', function(){
+    cy.get('#cat') //pega o ID = cat
+        .invoke('show')
+        .should('be.visible')
+    cy.get('#title')
+        .invoke('text', 'CAT TAT') //busca o ID = title, altera a propriedade text para CAT TAT
+    cy.get('#subtitle')
+        .invoke('text', 'I 💚 cats')        
     })
 })
